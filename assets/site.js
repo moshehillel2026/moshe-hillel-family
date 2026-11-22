@@ -252,11 +252,13 @@
   for(const k of ['record-query','type-filter','status-filter'])$(k).addEventListener('input',renderRecords);
   renderRecords();
   function revealHash(){
-    const hash=location.hash.slice(1);
-    if(hash.startsWith('r-')&&!$(hash)&&byId.has(hash.slice(2))){
+    const hash=decodeURIComponent(location.hash.slice(1));
+    if(!hash.startsWith('r-')||!byId.has(hash.slice(2)))return;
+    if(!$(hash)){
       for(const id of ['record-query','type-filter','status-filter'])$(id).value='';
-      renderRecords();$(hash)?.scrollIntoView();
+      renderRecords();
     }
+    requestAnimationFrame(()=>$(hash)?.scrollIntoView({block:'start'}));
   }
   window.addEventListener('hashchange',revealHash);revealHash();
 })();
